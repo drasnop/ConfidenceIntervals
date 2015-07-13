@@ -31,19 +31,32 @@ for(n in 2:10) {
 }
 
 evolution$interface <- factor(evolution$interface)
+
+# compute explicitely the lower and upper of the CI
+evolution$lci <- evolution$shortDuration - evolution$ci
+evolution$uci <- evolution$shortDuration + evolution$ci
+
+# de-log transform the data, computing the lower and upper bounds of the CI
+delog <- function(x) {exp(x)-1}
+evolution[c("shortDuration")] <- lapply(evolution[c("shortDuration")], delog)
+evolution[c("lci")] <- lapply(evolution[c("lci")], delog)
+evolution[c("uci")] <- lapply(evolution[c("uci")], delog)
+
 print(evolution)
 
 # plot mean + 95% Confidence Intervals as the size of the subset increases
 # of course, we need to de-log transform the data
-plot <- ggplot(evolution, aes(x=subset, y=exp(shortDuration)-1, colour=interface)) + 
-  geom_errorbar(aes(ymin=exp(shortDuration-ci)-1, ymax=exp(shortDuration+ci)-1), width=.1, position=position_dodge()) +
+plot <- ggplot(evolution, aes(x=subset, y=shortDuration, colour=interface)) + 
+  geom_errorbar(aes(ymin=lci, ymax=uci), width=.1, position=position_dodge()) +
   geom_line(position=position_dodge()) +
   geom_point(position=position_dodge(), size=3)
 
 print(plot)
 
 # plot the size of the confidence intervals as the size of the subset increases
+# NB: this is the log-transformed confidence interval
 plot2 <- ggplot(evolution, aes(x=subset, y=ci, colour=interface)) +
   geom_line(position=position_dodge()) +
   geom_point(position=position_dodge(), size=3)
+
 print(plot2)

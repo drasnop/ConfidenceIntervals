@@ -17,13 +17,24 @@ data$interface <- factor(data$interface)
 
 # aggreagate the data, and compute SD, SE and 95% CI
 datac <- summarySE(data, "shortDuration", "interface")
+
+# compute explicitely the lower and upper of the CI
+datac$lci <- datac$shortDuration - datac$ci
+datac$uci <- datac$shortDuration + datac$ci
+
+# de-log transform the data, computing the lower and upper bounds of the CI
+delog <- function(x) {exp(x)-1}
+datac[c("shortDuration")] <- lapply(datac[c("shortDuration")], delog)
+datac[c("lci")] <- lapply(datac[c("lci")], delog)
+datac[c("uci")] <- lapply(datac[c("uci")], delog)
+
 print(datac)
 
 # plot 95% Confidence Intervals
 # of course, we need to de-log transform the data
-plot <- ggplot(datac, aes(x=interface, y=exp(shortDuration)-1, fill=interface)) + 
+plot <- ggplot(datac, aes(x=interface, y=shortDuration, fill=interface)) + 
   geom_bar(position=position_dodge(), stat="identity") +
-  geom_errorbar(aes(ymin=exp(shortDuration-ci)-1, ymax=exp(shortDuration+ci)-1),
+  geom_errorbar(aes(ymin=lci, ymax=uci),
                 width=.2,                    # Width of the error bars
                 position=position_dodge(.9))
 print(plot)
