@@ -1,3 +1,9 @@
+# ignore RStudio files
+.RData
+.Rhistory
+*.Rproj
+.Rproj.user/
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
