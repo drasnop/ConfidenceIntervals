@@ -54,8 +54,8 @@ plot <- ggplot(evolution, aes(x=subset, y=shortDuration, colour=interface)) +
 print(plot)
 
 # plot the size of the confidence intervals as the size of the subset increases
-# NB: this is the log-transformed confidence interval
-plot2 <- ggplot(evolution, aes(x=subset, y=ci, colour=interface)) +
+# NB: this is the de-log transformed confidence interval
+plot2 <- ggplot(evolution, aes(x=subset, y=(uci-lci), colour=interface)) +
   geom_line(position=position_dodge()) +
   geom_point(position=position_dodge(), size=3)
 
