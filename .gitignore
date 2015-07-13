@@ -3,6 +3,7 @@
 .Rhistory
 *.Rproj
 .Rproj.user/
+plots/
 
 # Windows image file caches
 Thumbs.db
